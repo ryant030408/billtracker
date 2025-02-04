@@ -1,0 +1,16 @@
+# Ignore build output
+dist/
+out/
+node_modules/
+*.log
+*.DS_Store
+
+# Ignore dependencies (if using npm or yarn)
+package-lock.json
+yarn.lock
+
+# Ignore Electron cache
+/.electron/
+
+# Ignore VSCode settings (optional)
+.vscode/

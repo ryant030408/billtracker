@@ -1,0 +1,15 @@
+body {
+    background-color: #f8f9fa;
+  }
+  
+  h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .list-group-item {
+    transition: background-color 0.3s ease;
+  }
+  
+  .list-group-item:hover {
+    background-color: #e9ecef;
+  }

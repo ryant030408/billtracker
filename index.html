@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bill Tracker App (Dark)</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Animate.css (optional) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+  
+  <!-- Custom CSS for further overrides (optional) -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Some basic Tailwind dark theme config (optional inline or in tailwind.config.js) -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class', // ensures dark classes apply
+    };
+  </script>
+</head>
+<body class="dark:bg-gray-900 dark:text-gray-100 relative min-h-screen">
+
+<!-- AMERICAN FLAG (bottom center) -->
+<img
+  src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+  alt="US Flag"
+  class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-16 h-auto shadow-lg"
+/>
+
+<div class="max-w-5xl mx-auto mt-6 p-4 bg-gray-800 shadow-md rounded-lg min-h-[80vh]">
+  <h1 class="text-3xl font-bold text-center mb-6">Bill Tracker (Dark Mode)</h1>
+
+  <!-- Tab Buttons (with icons) -->
+  <div class="flex space-x-4 mb-6 justify-center">
+    <!-- Bill View -->
+    <button
+      class="tab-btn inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-500 transition"
+      data-tab="bill-view"
+    >
+      <!-- Heroicon: Home -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5 mr-2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M2.25 12l9-9 9 9M4.5 10.5v9.75A1.5 1.5 0 006 21.75h3.75"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M19.5 10.5V21a1.5 1.5 0 01-1.5 1.5h-3.75"
+        />
+      </svg>
+      Bill View
+    </button>
+
+    <!-- Manage Bills -->
+    <button
+      class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
+      data-tab="manage-bills"
+    >
+      <!-- Heroicon: Pencil Square -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        class="w-5 h-5 mr-2"
+      >
+        <path
+          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.25 
+             2.25 0 113.182 3.182L7.5 15.75 4.5 
+             16.5l.75-3L16.732 3.732z"
+        />
+      </svg>
+      Manage Bills
+    </button>
+
+    <!-- Calendar -->
+    <button
+      class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
+      data-tab="calendar-view"
+    >
+      <!-- Heroicon: Calendar -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5 mr-2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M19.5 6h-15m15 0H21a1.5 
+             1.5 0 011.5 1.5v11.25A2.25 2.25 
+             0 0120.25 21H3.75A2.25 2.25 
+             0 011.5 18.75V7.5A1.5 1.5 0 
+             013 6h1.5m3 0V3.75M16.5 6V3.75"
+        />
+      </svg>
+      Calendar
+    </button>
+
+    <!-- Settings -->
+    <button
+      class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
+      data-tab="settings"
+    >
+      <!-- Heroicon: Cog-6-Tooth -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5 mr-2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4.5 
+             12a7.5 7.5 0 0114.734-2.312c.079.24.118.498.118.762 
+             0 .264-.04.521-.118.762L19.5 
+             12a7.5 7.5 0 01-14.734 2.312c-.079-.24-.118-.498-.118-.762 
+             0-.264.04-.521.118-.762L4.5 12z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 15.75a3.75 3.75 0 
+             100-7.5 3.75 3.75 0 000 7.5z"
+        />
+      </svg>
+      Settings
+    </button>
+  </div>
+
+  <!-- Tab Contents -->
+  <div id="tab-contents">
+
+    <!-- Bill View -->
+    <section id="bill-view" class="tab-content block">
+      <div class="flex items-center justify-between mb-4">
+        <button
+          id="prev-month"
+          class="px-3 py-1 border border-gray-600 rounded bg-gray-700 text-gray-200 hover:bg-gray-600"
+        >
+          Previous
+        </button>
+        <h2 id="current-month" class="text-xl font-semibold"></h2>
+        <button
+          id="next-month"
+          class="px-3 py-1 border border-gray-600 rounded bg-gray-700 text-gray-200 hover:bg-gray-600"
+        >
+          Next
+        </button>
+      </div>
+
+      <!-- Monthly Totals -->
+      <div
+        id="bill-summary"
+        class="mb-4 p-3 bg-gray-700 border-l-4 border-blue-400 rounded"
+      >
+        <p>
+          <strong>This Month’s Totals:</strong><br />
+          Paid: $0.00 | Remaining: $0.00
+        </p>
+      </div>
+
+      <!-- Bill list -->
+      <div id="bill-list" class="space-y-2"></div>
+    </section>
+
+    <!-- Manage Bills -->
+    <section id="manage-bills" class="tab-content hidden">
+      <h2 class="text-xl font-semibold mb-3">Manage Bills</h2>
+      <form id="bill-form" class="space-y-4 mb-6">
+        <input type="hidden" id="bill-id" value="" />
+
+        <div>
+          <label for="bill-name" class="block font-medium">Name:</label>
+          <input
+            type="text"
+            id="bill-name"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+            required
+          />
+        </div>
+        <div>
+          <label for="bill-category" class="block font-medium">Category:</label>
+          <select
+            id="bill-category"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+          >
+            <option value="Loan">Loan</option>
+            <option value="Utility">Utility</option>
+            <option value="Credit Card">Credit Card</option>
+          </select>
+        </div>
+        <div>
+          <label for="bill-due-date" class="block font-medium">Due Date:</label>
+          <input
+            type="date"
+            id="bill-due-date"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+            required
+          />
+        </div>
+
+        <!-- Loan-specific fields -->
+        <div id="loan-fields" class="hidden space-y-2">
+          <div>
+            <label class="block font-medium">Balance (Optional):</label>
+            <input
+              type="number"
+              id="bill-balance"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+          <div>
+            <label class="block font-medium">Minimum Payment:</label>
+            <input
+              type="number"
+              id="bill-min-payment"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+          <div>
+            <label class="block font-medium">APR (Optional):</label>
+            <input
+              type="number"
+              id="bill-apr"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+        </div>
+
+        <!-- Credit Card-specific fields -->
+        <div id="credit-card-fields" class="hidden space-y-2">
+          <div>
+            <label class="block font-medium">Balance (Optional):</label>
+            <input
+              type="number"
+              id="cc-balance"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+          <div>
+            <label class="block font-medium">Credit Limit (Optional):</label>
+            <input
+              type="number"
+              id="cc-limit"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+          <div>
+            <label class="block font-medium">Minimum Payment:</label>
+            <input
+              type="number"
+              id="cc-min-payment"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+          <div>
+            <label class="block font-medium">APR (Optional):</label>
+            <input
+              type="number"
+              id="cc-apr"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+        </div>
+
+        <!-- Utility-specific fields -->
+        <div id="utility-fields" class="hidden space-y-2">
+          <div>
+            <label class="block font-medium">Monthly Amount:</label>
+            <input
+              type="number"
+              id="utility-amount"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              step="0.01"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded shadow"
+        >
+          Save Bill
+        </button>
+      </form>
+
+      <!-- Manage Bill List -->
+      <div id="manage-bill-list" class="space-y-2"></div>
+    </section>
+
+    <!-- Calendar View -->
+    <section id="calendar-view" class="tab-content hidden">
+      <h2 class="text-xl font-semibold mb-3">Calendar View</h2>
+      <div id="calendar-container" class="p-2 bg-gray-700 rounded"></div>
+    </section>
+
+    <!-- Settings -->
+    <section id="settings" class="tab-content hidden">
+      <h2 class="text-xl font-semibold mb-3">Settings</h2>
+      <div class="space-x-2">
+        <button
+          id="backup-btn"
+          class="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded shadow"
+        >
+          Backup Data
+        </button>
+        <button
+          id="restore-btn"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded shadow"
+        >
+          Restore Data
+        </button>
+        <button
+          id="reset-btn"
+          class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded shadow"
+        >
+          Master Reset
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Payment Drawer -->
+<div
+  id="pay-drawer"
+  class="fixed top-0 right-0 w-64 h-full bg-gray-800 shadow-xl border-l border-gray-600
+         transform translate-x-full transition-transform duration-300 flex flex-col p-4 z-50"
+>
+  <h3 class="text-xl font-bold mb-4">Enter Payment</h3>
+  <input
+    type="number"
+    id="pay-amount"
+    class="border border-gray-600 p-2 rounded w-full mb-4 bg-gray-700 text-gray-100"
+    step="0.01"
+    placeholder="Amount"
+  />
+  <div class="mt-auto flex justify-end space-x-2">
+    <button
+      id="pay-cancel-btn"
+      class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded"
+    >
+      Cancel
+    </button>
+    <button
+      id="pay-confirm-btn"
+      class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded"
+    >
+      OK
+    </button>
+  </div>
+</div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

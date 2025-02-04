@@ -1,0 +1,15 @@
+{
+    "name": "electron-bill-tracker",
+    "version": "1.0.0",
+    "description": "Electron Bill Tracker App",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "devDependencies": {
+        "electron": "^26.0.0"
+    },
+    "dependencies": {
+        "electron-osx-prompt": "^1.4.1"
+    }
+}
