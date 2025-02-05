@@ -2,9 +2,9 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <title>Bill Tracker App (Dark)</title>
+  <title>Bill Tracker (Paychecks + Credit Analysis)</title>
 
-  <!-- Tailwind CSS via CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Animate.css (optional) -->
@@ -12,55 +12,48 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
   />
-  
-  <!-- Custom CSS for further overrides (optional) -->
+
+  <!-- Custom CSS overrides (optional) -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Some basic Tailwind dark theme config (optional inline or in tailwind.config.js) -->
+  <!-- Force dark mode -->
   <script>
     tailwind.config = {
-      darkMode: 'class', // ensures dark classes apply
+      darkMode: 'class',
     };
   </script>
 </head>
 <body class="dark:bg-gray-900 dark:text-gray-100 relative min-h-screen">
 
-<!-- AMERICAN FLAG (bottom center) -->
+<!-- American Flag, bottom center -->
 <img
   src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
   alt="US Flag"
-  class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-16 h-auto shadow-lg"
+  class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-16 h-auto"
 />
 
-<div class="max-w-5xl mx-auto mt-6 p-4 bg-gray-800 shadow-md rounded-lg min-h-[80vh]">
-  <h1 class="text-3xl font-bold text-center mb-6">Bill Tracker (Dark Mode)</h1>
+<div class="max-w-6xl mx-auto mt-6 p-4 bg-gray-800 shadow-md rounded-lg min-h-[80vh]">
+  <h1 class="text-3xl font-bold text-center mb-6">Bill Tracker (Expanded)</h1>
 
-  <!-- Tab Buttons (with icons) -->
-  <div class="flex space-x-4 mb-6 justify-center">
-    <!-- Bill View -->
+  <div class="flex flex-wrap space-x-2 mb-6 justify-center">
+    <!-- Bill View Tab -->
     <button
       class="tab-btn inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-500 transition"
       data-tab="bill-view"
     >
-      <!-- Heroicon: Home -->
+      <!-- Icon (Home) -->
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="w-5 h-5 mr-2"
+        xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke-width="1.5"
+        stroke="currentColor" class="w-5 h-5 mr-2"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M2.25 12l9-9 9 9M4.5 10.5v9.75A1.5 1.5 0 006 21.75h3.75"
-        />
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M19.5 10.5V21a1.5 1.5 0 01-1.5 1.5h-3.75"
-        />
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 12l9-9 9 9M4.5 
+                 10.5v9.75A1.5 1.5 0 006
+                 21.75h3.75" />
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19.5 10.5V21a1.5 1.5 
+                 0 01-1.5 1.5h-3.75" />
       </svg>
       Bill View
     </button>
@@ -70,20 +63,49 @@
       class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
       data-tab="manage-bills"
     >
-      <!-- Heroicon: Pencil Square -->
+      <!-- Icon (Pencil) -->
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
+        viewBox="0 0 24 24" fill="currentColor"
         class="w-5 h-5 mr-2"
       >
         <path
           d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.25 
-             2.25 0 113.182 3.182L7.5 15.75 4.5 
-             16.5l.75-3L16.732 3.732z"
+             2.25 0 113.182 3.182L7.5
+             15.75 4.5 16.5l.75-3L16.732
+             3.732z"
         />
       </svg>
       Manage Bills
+    </button>
+
+    <!-- Manage Paychecks -->
+    <button
+      class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
+      data-tab="manage-paychecks"
+    >
+      <!-- Icon (Banknotes) -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none" viewBox="0 0 24 24"
+        stroke-width="1.5" stroke="currentColor"
+        class="w-5 h-5 mr-2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 12c0-1.125-.009-2.25-.023-3.374C20.954
+                 6.596 19.956 5.25 18.75 5.25H5.25C4.044
+                 5.25 3.046 6.596 3.023 8.626 3.009
+                 9.75 3 10.875 3 12s.009 2.25.023
+                 3.374c.023 2.03 1.02 3.376 2.227
+                 3.376h13.5c1.207 0 2.205-1.346
+                 2.227-3.376.014-1.125.023-2.25.023-3.374z"
+        />
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M7.5 12a3.75 3.75 0 007.5
+                 0 3.75 3.75 0 00-7.5 0z"
+        />
+      </svg>
+      Manage Paychecks
     </button>
 
     <!-- Calendar -->
@@ -91,26 +113,52 @@
       class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
       data-tab="calendar-view"
     >
-      <!-- Heroicon: Calendar -->
+      <!-- Icon (Calendar) -->
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
+        fill="none" viewBox="0 0 24 24"
+        stroke-width="1.5" stroke="currentColor"
         class="w-5 h-5 mr-2"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M19.5 6h-15m15 0H21a1.5 
-             1.5 0 011.5 1.5v11.25A2.25 2.25 
-             0 0120.25 21H3.75A2.25 2.25 
-             0 011.5 18.75V7.5A1.5 1.5 0 
-             013 6h1.5m3 0V3.75M16.5 6V3.75"
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19.5 6h-15m15 0H21a1.5 
+                 1.5 0 011.5 1.5v11.25A2.25 
+                 2.25 0 0120.25 21H3.75A2.25
+                 2.25 0 011.5 18.75V7.5A1.5 
+                 1.5 0 013 6h1.5m3 0V3.75
+                 M16.5 6V3.75"
         />
       </svg>
       Calendar
+    </button>
+
+    <!-- Credit Card Analysis -->
+    <button
+      class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
+      data-tab="credit-analysis"
+    >
+      <!-- Icon (CreditCard) -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none" viewBox="0 0 24 24"
+        stroke-width="1.5" stroke="currentColor"
+        class="w-5 h-5 mr-2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 9h19.5m-19.5
+                 0h19.5m-19.5 0v-2.25A2.25 2.25 
+                 0 014.5 4.5h15a2.25 2.25 0 
+                 012.25 2.25V9m-2.25
+                 6h.008v.008H19.5V15zm-3.75
+                 0h.008v.008H15.75V15z"
+        />
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 9v8.25A2.25 2.25 
+                 0 004.5 19.5h15a2.25 2.25
+                 0 002.25-2.25V9"
+        />
+      </svg>
+      Credit Analysis
     </button>
 
     <!-- Settings -->
@@ -118,18 +166,15 @@
       class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
       data-tab="settings"
     >
-      <!-- Heroicon: Cog-6-Tooth -->
+      <!-- Icon (Cog) -->
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
+        fill="none" viewBox="0 0 24 24"
+        stroke-width="1.5" stroke="currentColor"
         class="w-5 h-5 mr-2"
       >
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          stroke-linecap="round" stroke-linejoin="round"
           d="M4.5 
              12a7.5 7.5 0 0114.734-2.312c.079.24.118.498.118.762 
              0 .264-.04.521-.118.762L19.5 
@@ -137,8 +182,7 @@
              0-.264.04-.521.118-.762L4.5 12z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          stroke-linecap="round" stroke-linejoin="round"
           d="M12 15.75a3.75 3.75 0 
              100-7.5 3.75 3.75 0 000 7.5z"
         />
@@ -149,7 +193,6 @@
 
   <!-- Tab Contents -->
   <div id="tab-contents">
-
     <!-- Bill View -->
     <section id="bill-view" class="tab-content block">
       <div class="flex items-center justify-between mb-4">
@@ -167,28 +210,23 @@
           Next
         </button>
       </div>
-
-      <!-- Monthly Totals -->
       <div
         id="bill-summary"
         class="mb-4 p-3 bg-gray-700 border-l-4 border-blue-400 rounded"
       >
         <p>
-          <strong>This Month’s Totals:</strong><br />
+          <strong>This Month’s Totals:</strong><br/>
           Paid: $0.00 | Remaining: $0.00
         </p>
       </div>
-
-      <!-- Bill list -->
       <div id="bill-list" class="space-y-2"></div>
     </section>
 
-    <!-- Manage Bills -->
+    <!-- Manage Bills Section -->
     <section id="manage-bills" class="tab-content hidden">
       <h2 class="text-xl font-semibold mb-3">Manage Bills</h2>
       <form id="bill-form" class="space-y-4 mb-6">
         <input type="hidden" id="bill-id" value="" />
-
         <div>
           <label for="bill-name" class="block font-medium">Name:</label>
           <input
@@ -204,9 +242,10 @@
             id="bill-category"
             class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
           >
-            <option value="Loan">Loan</option>
             <option value="Utility">Utility</option>
+            <option value="Loan">Loan</option>
             <option value="Credit Card">Credit Card</option>
+            <option value="Other">Other</option>
           </select>
         </div>
         <div>
@@ -218,56 +257,16 @@
             required
           />
         </div>
-
-        <!-- Loan-specific fields -->
-        <div id="loan-fields" class="hidden space-y-2">
+        <!-- For non-CC, you might store just "amount." For CC, store advanced fields: balance, minPayment, apr, creditLimit -->
+        <div id="cc-extra-fields" class="hidden space-y-2">
           <div>
-            <label class="block font-medium">Balance (Optional):</label>
-            <input
-              type="number"
-              id="bill-balance"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              step="0.01"
-            />
-          </div>
-          <div>
-            <label class="block font-medium">Minimum Payment:</label>
-            <input
-              type="number"
-              id="bill-min-payment"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              step="0.01"
-            />
-          </div>
-          <div>
-            <label class="block font-medium">APR (Optional):</label>
-            <input
-              type="number"
-              id="bill-apr"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              step="0.01"
-            />
-          </div>
-        </div>
-
-        <!-- Credit Card-specific fields -->
-        <div id="credit-card-fields" class="hidden space-y-2">
-          <div>
-            <label class="block font-medium">Balance (Optional):</label>
+            <label class="block font-medium">Current Balance:</label>
             <input
               type="number"
               id="cc-balance"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
               step="0.01"
-            />
-          </div>
-          <div>
-            <label class="block font-medium">Credit Limit (Optional):</label>
-            <input
-              type="number"
-              id="cc-limit"
               class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              step="0.01"
+              placeholder="How much you currently owe"
             />
           </div>
           <div>
@@ -275,34 +274,39 @@
             <input
               type="number"
               id="cc-min-payment"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
               step="0.01"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
             />
           </div>
           <div>
-            <label class="block font-medium">APR (Optional):</label>
+            <label class="block font-medium">APR (%):</label>
             <input
               type="number"
               id="cc-apr"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
               step="0.01"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
             />
           </div>
-        </div>
-
-        <!-- Utility-specific fields -->
-        <div id="utility-fields" class="hidden space-y-2">
           <div>
-            <label class="block font-medium">Monthly Amount:</label>
+            <label class="block font-medium">Credit Limit (Optional):</label>
             <input
               type="number"
-              id="utility-amount"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+              id="cc-limit"
               step="0.01"
+              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
             />
           </div>
         </div>
-
+        <div id="non-cc-amount-field" class="space-y-2">
+          <label class="block font-medium">Amount:</label>
+          <input
+            type="number"
+            step="0.01"
+            id="bill-amount"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+            placeholder="Monthly amount if not CC"
+          />
+        </div>
         <button
           type="submit"
           class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded shadow"
@@ -310,15 +314,105 @@
           Save Bill
         </button>
       </form>
-
-      <!-- Manage Bill List -->
       <div id="manage-bill-list" class="space-y-2"></div>
+    </section>
+
+    <!-- Manage Paychecks Section -->
+    <section id="manage-paychecks" class="tab-content hidden">
+      <h2 class="text-xl font-semibold mb-3">Manage Paychecks</h2>
+      <form id="paycheck-form" class="space-y-4 mb-6">
+        <input type="hidden" id="paycheck-id" value="" />
+        <div>
+          <label class="block font-medium">Name:</label>
+          <input
+            type="text"
+            id="paycheck-name"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+            required
+          />
+        </div>
+        <div>
+          <label class="block font-medium">Frequency:</label>
+          <select
+            id="paycheck-frequency"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+          >
+            <option>Weekly</option>
+            <option>BiWeekly</option>
+            <option>SemiMonthly</option>
+            <option>Monthly</option>
+            <option>OneOff</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-medium">Amount:</label>
+          <input
+            type="number"
+            step="0.01"
+            id="paycheck-amount"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+          />
+        </div>
+        <div>
+          <label class="block font-medium">Start Date (or first known payday):</label>
+          <input
+            type="date"
+            id="paycheck-start"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+          />
+        </div>
+        <div>
+          <label class="block font-medium">Extra Info (SemiMonthly days, or OneOff date):</label>
+          <input
+            type="text"
+            id="paycheck-extra"
+            class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
+            placeholder="e.g. '7,22' for SemiMonthly or '2024-01-15' for OneOff"
+          />
+        </div>
+        <button
+          type="submit"
+          class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded shadow"
+        >
+          Save Paycheck
+        </button>
+      </form>
+      <div id="manage-paycheck-list" class="space-y-2"></div>
     </section>
 
     <!-- Calendar View -->
     <section id="calendar-view" class="tab-content hidden">
       <h2 class="text-xl font-semibold mb-3">Calendar View</h2>
       <div id="calendar-container" class="p-2 bg-gray-700 rounded"></div>
+    </section>
+
+    <!-- Credit Card Analysis -->
+    <section id="credit-analysis" class="tab-content hidden">
+      <h2 class="text-xl font-semibold mb-3">Credit Card Analysis</h2>
+      <p class="mb-2 text-sm text-gray-300">
+        Below we identify all bills with <b>category=Credit Card</b> and read their
+        <b>balance, minPayment, APR</b> to compute interest & payoff times.
+      </p>
+      <div id="cc-list" class="space-y-2 mb-4"></div>
+
+      <div class="mb-4 p-3 bg-gray-700 rounded">
+        <label class="block font-medium">Extra Monthly Payment (beyond min payments):</label>
+        <input
+          type="range"
+          id="snowball-extra"
+          min="0" max="2000" step="50"
+          class="w-full mt-2"
+        />
+        <span id="snowball-extra-value" class="text-xs"></span>
+        <button
+          id="snowball-calc-btn"
+          class="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded"
+        >
+          Calculate Snowball
+        </button>
+      </div>
+
+      <div id="snowball-result" class="text-sm"></div>
     </section>
 
     <!-- Settings -->
@@ -357,9 +451,9 @@
   <h3 class="text-xl font-bold mb-4">Enter Payment</h3>
   <input
     type="number"
+    step="0.01"
     id="pay-amount"
     class="border border-gray-600 p-2 rounded w-full mb-4 bg-gray-700 text-gray-100"
-    step="0.01"
     placeholder="Amount"
   />
   <div class="mt-auto flex justify-end space-x-2">
