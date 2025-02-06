@@ -1,4 +1,5 @@
 // bill.js
+// A class to represent a bill.
 class Bill {
     constructor({
       name = "",
@@ -22,7 +23,7 @@ class Bill {
       this.paymentHistory = paymentHistory;
     }
   
-    // Return the monthly due based on category
+    // Returns the monthly due based on category
     getMonthlyDue() {
       if (this.category === "Loan" || this.category === "Credit Card") {
         return parseFloat(this.minPayment) || 0;
@@ -32,14 +33,14 @@ class Bill {
       return 0;
     }
   
-    // Sum payments for a given month and year
+    // Sums payments for a given month and year
     getPaidThisMonth(year, month) {
       return this.paymentHistory
         .filter(r => r.year === year && r.month === month)
         .reduce((acc, r) => acc + r.amount, 0);
     }
   
-    // Add a payment and update balance if necessary
+    // Adds a payment and updates balance if needed
     addPayment({ amount, year, month }) {
       if (typeof amount !== 'number' || amount <= 0) {
         throw new Error("Invalid payment amount");
@@ -50,7 +51,7 @@ class Bill {
       }
     }
   
-    // Format the due date for display
+    // Returns a formatted due date string (MM/DD/YYYY)
     getFormattedDueDate() {
       if (!this.dueDate) return 'N/A';
       const parsed = new Date(this.dueDate + 'T00:00:00');

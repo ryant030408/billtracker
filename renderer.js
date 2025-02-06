@@ -8,30 +8,37 @@ function init() {
   ui.loadManageBills();
   ui.setupPaymentDrawer();
   ui.setupSettings();
-
-  // Month navigation in Bill View
+  
+  // Setup paycheck form listener
+  document.getElementById('paycheck-form').addEventListener('submit', ui.savePaycheckForm);
+  // Load managed paychecks on startup
+  ui.loadManagePaychecks();
+  
+  // Month navigation buttons in Bill View
   document.getElementById('prev-month').addEventListener('click', () => {
-    // Update the global currentMonth in ui.js directly
     ui.currentMonth.setMonth(ui.currentMonth.getMonth() - 1);
     ui.updateMonthDisplay();
     ui.loadBills();
     ui.renderCalendar();
+    ui.loadPaychecksView();
   });
   document.getElementById('next-month').addEventListener('click', () => {
     ui.currentMonth.setMonth(ui.currentMonth.getMonth() + 1);
     ui.updateMonthDisplay();
     ui.loadBills();
     ui.renderCalendar();
+    ui.loadPaychecksView();
   });
 
-  // Manage Bills form
+  // Bill form
   document.getElementById('bill-form').addEventListener('submit', ui.saveBillForm);
   document.getElementById('bill-category').addEventListener('change', e => {
     ui.showExtraFields(e.target.value);
   });
 
-  // Initial calendar render
+  // Initial render for calendar and paycheck view
   ui.renderCalendar();
+  ui.loadPaychecksView();
 }
 
 document.addEventListener('DOMContentLoaded', init);
