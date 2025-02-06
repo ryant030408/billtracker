@@ -3,6 +3,9 @@ const ui = require('./ui');
 
 function init() {
   ui.setupTabs();
+  // Automatically select the Bill View tab
+  document.querySelector('[data-tab="bill-view"]').click();
+
   ui.updateMonthDisplay();
   ui.loadBills();
   ui.loadManageBills();
