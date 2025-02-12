@@ -42,7 +42,8 @@ class Paycheck {
       // Occurs on the same day-of-week and the difference in days is a multiple of 14.
       const target = new Date(year, month, day);
       if (original.getDay() !== target.getDay()) return false;
-      const diff = Math.abs((target - original) / (1000 * 60 * 60 * 24));
+      // Round the day difference to the nearest integer.
+      const diff = Math.round((target - original) / (1000 * 60 * 60 * 24));
       return diff % 14 === 0;
     }
     if (this.recurrenceType === "monthly") {
