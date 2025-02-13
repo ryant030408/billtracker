@@ -18,7 +18,6 @@ function updateMonthDisplay() {
 // --------------------
 // BILL FUNCTIONS
 // --------------------
-
 async function loadBills() {
   await dataService.loadData();
   const bills = dataService.getBills();
@@ -33,11 +32,12 @@ async function loadBills() {
   if (!bills.length) {
     summary.innerHTML = `
       <p>
-        <strong>This Month’s Bills:</strong><br/>
+        <strong>This Month’s Bills:</strong><br>
         Paid: $0.00 | Remaining: $0.00
       </p>`;
     const noBills = document.createElement('div');
-    noBills.className = 'p-3 bg-gray-700 rounded';
+    // Use the neumorphic class for a light background
+    noBills.className = 'neumorphic p-4';
     noBills.textContent = 'No bills yet. Add one under Manage Bills.';
     billList.appendChild(noBills);
   } else {
@@ -48,21 +48,21 @@ async function loadBills() {
       totalPaid += paidThisMonth;
 
       const leftover = Math.max(monthlyDue - paidThisMonth, 0);
-      const isPaid = leftover <= 0 && monthlyDue > 0;
+      const isPaid = (paidThisMonth >= monthlyDue && monthlyDue > 0);
       const dueDateStr = bill.getFormattedDueDate();
 
+      // Create bill item using our neumorphic styling
       const item = document.createElement('div');
-      item.className = 'p-3 bg-gray-700 border border-gray-600 rounded flex justify-between items-center';
-
+      item.className = 'neumorphic p-4 flex justify-between items-center';
       item.innerHTML = `
         <div>
-          <div class="font-semibold">${bill.name}</div>
+          <div class="font-semibold text-lg">${bill.name}</div>
           <div class="text-sm">
-            Due: ${dueDateStr} <br/>
-            Monthly Due: $${monthlyDue.toFixed(2)} <br/>
-            Paid So Far: $${paidThisMonth.toFixed(2)} <br/>
-            Leftover: $${leftover.toFixed(2)} <br/>
-            Status: <span class="${isPaid ? 'text-green-400' : 'text-red-400'}">
+            Due: ${dueDateStr}<br>
+            Monthly Due: $${monthlyDue.toFixed(2)}<br>
+            Paid: $${paidThisMonth.toFixed(2)}<br>
+            Leftover: $${leftover.toFixed(2)}<br>
+            Status: <span class="${isPaid ? 'text-green-600' : 'text-red-600'}">
               ${isPaid ? 'Paid' : 'Unpaid'}
             </span>
           </div>
@@ -70,7 +70,7 @@ async function loadBills() {
       `;
       if (!isPaid && leftover > 0) {
         const payBtn = document.createElement('button');
-        payBtn.className = 'px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded';
+        payBtn.className = 'neumorphic-button';
         payBtn.textContent = 'Pay';
         payBtn.onclick = () => showPayDrawer(index);
         item.appendChild(payBtn);
@@ -81,7 +81,7 @@ async function loadBills() {
   const totalLeft = Math.max(totalDue - totalPaid, 0);
   summary.innerHTML = `
     <p>
-      <strong>This Month’s Bills:</strong><br/>
+      <strong>This Month’s Bills:</strong><br>
       Paid: $${totalPaid.toFixed(2)} | Remaining: $${totalLeft.toFixed(2)}
     </p>`;
 }
@@ -125,62 +125,107 @@ function setupPaymentDrawer() {
 // --------------------
 // PAYCHECK FUNCTIONS
 // --------------------
-
-// Loads paycheck information for the Bill View section
 async function loadPaychecksView() {
   await dataService.loadData();
   const paychecks = dataService.getPaychecks();
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
+  const lastOfMonth = new Date(year, month + 1, 0);
+  const daysInMonth = lastOfMonth.getDate();
   
   let totalPay = 0;
   paychecks.forEach(pc => {
-    const pcDate = new Date(pc.date + 'T00:00:00');
-    if (pcDate.getFullYear() === year && pcDate.getMonth() === month) {
-      totalPay += pc.amount;
+    if (!pc.recurrence) {
+      const pcDate = new Date(pc.date + 'T00:00:00');
+      if (pcDate.getFullYear() === year && pcDate.getMonth() === month) {
+        totalPay += pc.amount;
+      }
+    } else {
+      // Count the number of occurrences for a recurring paycheck in the current month
+      let count = 0;
+      for (let day = 1; day <= daysInMonth; day++) {
+        if (pc.occursOn(year, month, day)) count++;
+      }
+      totalPay += (pc.amount * count);
     }
   });
   const paycheckSummary = document.getElementById('paycheck-summary');
   if (paycheckSummary) {
     paycheckSummary.innerHTML = `<p>
-      <strong>This Month’s Paychecks:</strong><br/>
+      <strong>This Month’s Paychecks:</strong><br>
       Total: $${totalPay.toFixed(2)}
     </p>`;
   }
   
+  // (The list rendering below uses calendar logic; see updated renderCalendar.)
   const paycheckList = document.getElementById('paycheck-list');
   if (paycheckList) {
     paycheckList.innerHTML = '';
     paychecks.forEach((pc, index) => {
-      const pcDate = new Date(pc.date + 'T00:00:00');
-      if (pcDate.getFullYear() === year && pcDate.getMonth() === month) {
-        const item = document.createElement('div');
-        item.className = 'p-3 bg-gray-700 border border-gray-600 rounded flex justify-between items-center';
-        item.innerHTML = `
-          <div>
-            <div class="font-semibold">Paycheck</div>
-            <div class="text-sm">
-              Date: ${pc.getFormattedDate()}<br/>
-              Amount: $${pc.amount.toFixed(2)}
+      if (!pc.recurrence) {
+        const pcDate = new Date(pc.date + 'T00:00:00');
+        if (pcDate.getFullYear() === year && pcDate.getMonth() === month) {
+          const item = document.createElement('div');
+          item.className = 'neumorphic p-4 flex justify-between items-center';
+          item.innerHTML = `
+            <div>
+              <div class="font-semibold">Paycheck</div>
+              <div class="text-sm">
+                Date: ${pc.getFormattedDate()}<br>
+                Amount: $${pc.amount.toFixed(2)}
+              </div>
             </div>
-          </div>
-        `;
-        paycheckList.appendChild(item);
+          `;
+          paycheckList.appendChild(item);
+        }
+      } else {
+        // For recurring, count occurrences and display once
+        let count = 0;
+        for (let day = 1; day <= daysInMonth; day++) {
+          if (pc.occursOn(year, month, day)) count++;
+        }
+        if (count > 0) {
+          const item = document.createElement('div');
+          item.className = 'neumorphic p-4 flex justify-between items-center';
+          item.innerHTML = `
+            <div>
+              <div class="font-semibold">Recurring Paycheck</div>
+              <div class="text-sm">
+                Occurs ${count} times this month<br>
+                Amount per occurrence: $${pc.amount.toFixed(2)}
+              </div>
+            </div>
+          `;
+          paycheckList.appendChild(item);
+        }
       }
     });
   }
 }
 
-// Handles the paycheck form submission in Manage Bills
 async function savePaycheckForm(e) {
   e.preventDefault();
   const date = document.getElementById('paycheck-date').value;
   const amount = parseFloat(document.getElementById('paycheck-amount').value);
+  // Get recurrence settings
+  const recurrence = document.getElementById('paycheck-recurrence').checked;
+  const recurrenceType = document.getElementById('paycheck-recurrence-type').value;
+  let customDays = [];
+  if (recurrence && recurrenceType === "custom") {
+    const customDaysInput = document.getElementById('paycheck-custom-days').value;
+    customDays = customDaysInput.split(',').map(d => parseInt(d.trim(), 10)).filter(d => !isNaN(d));
+  }
   if (!date || isNaN(amount) || amount <= 0) {
     alert("Please enter a valid date and positive amount.");
     return;
   }
-  const newPaycheck = new Paycheck({ date, amount });
+  const newPaycheck = new (require('./paycheck'))({
+    date,
+    amount,
+    recurrence,
+    recurrenceType: recurrence ? recurrenceType : "",
+    customDays
+  });
   const paychecks = dataService.getPaychecks();
   paychecks.push(newPaycheck);
   await dataService.saveData();
@@ -190,7 +235,6 @@ async function savePaycheckForm(e) {
   renderCalendar();
 }
 
-// Loads the Manage Paychecks list in the Manage Bills section
 async function loadManagePaychecks() {
   await dataService.loadData();
   const paychecks = dataService.getPaychecks();
@@ -199,7 +243,7 @@ async function loadManagePaychecks() {
 
   if (!paychecks.length) {
     const noItem = document.createElement('div');
-    noItem.className = 'p-3 bg-gray-700 rounded';
+    noItem.className = 'neumorphic p-4';
     noItem.textContent = 'No paychecks yet. Add one below.';
     manageList.appendChild(noItem);
     return;
@@ -207,12 +251,12 @@ async function loadManagePaychecks() {
   
   paychecks.forEach((pc, index) => {
     const item = document.createElement('div');
-    item.className = 'p-3 bg-gray-700 border border-gray-600 rounded flex justify-between items-center';
+    item.className = 'neumorphic p-4 flex justify-between items-center';
     item.innerHTML = `
       <div>
         <div class="font-semibold">Paycheck</div>
         <div class="text-sm">
-          Date: ${pc.getFormattedDate()}<br/>
+          Date: ${pc.getFormattedDate()}<br>
           Amount: $${pc.amount.toFixed(2)}
         </div>
       </div>
@@ -220,23 +264,18 @@ async function loadManagePaychecks() {
     const btnGroup = document.createElement('div');
     btnGroup.className = 'space-x-2';
     const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded';
+    deleteBtn.className = 'neumorphic-button';
     deleteBtn.textContent = 'Delete';
     deleteBtn.onclick = async () => {
-        if (!confirm("Are you sure you want to delete this paycheck?")) return;
-        // Retrieve the current paychecks array
-        let currentPaychecks = dataService.getPaychecks();
-        // Remove the paycheck at the given index
-        currentPaychecks.splice(index, 1);
-        // Update the data service with the new array
-        dataService.setPaychecks(currentPaychecks);
-        // Save the updated data
-        await dataService.saveData();
-        // Refresh the UI sections
-        await loadManagePaychecks();
-        await loadPaychecksView();
-        renderCalendar();
-      };
+      if (!confirm("Are you sure you want to delete this paycheck?")) return;
+      let currentPaychecks = dataService.getPaychecks();
+      currentPaychecks.splice(index, 1);
+      dataService.setPaychecks(currentPaychecks);
+      await dataService.saveData();
+      await loadManagePaychecks();
+      await loadPaychecksView();
+      renderCalendar();
+    };
     btnGroup.appendChild(deleteBtn);
     item.appendChild(btnGroup);
     manageList.appendChild(item);
@@ -246,99 +285,99 @@ async function loadManagePaychecks() {
 // --------------------
 // CALENDAR RENDERING
 // --------------------
-
-// File: ui.js
-// File: ui.js
 async function renderCalendar() {
-    const container = document.getElementById('calendar-container');
-    if (!container) return;
-    container.innerHTML = '';
-  
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    const firstOfMonth = new Date(year, month, 1);
-    const dayOfWeek = firstOfMonth.getDay();
-    const lastOfMonth = new Date(year, month + 1, 0);
-    const daysInMonth = lastOfMonth.getDate();
-  
-    let html = `
-      <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold">
-        <div>Sun</div><div>Mon</div><div>Tue</div>
-        <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-      </div>
-    `;
-  
-    // Group bills by day
-    const bills = dataService.getBills();
-    const billsByDay = {};
-    bills.forEach(bill => {
-      if (!bill.dueDate) return;
-      const d = new Date(bill.dueDate + 'T00:00:00');
-      if (d.getFullYear() === year && d.getMonth() === month) {
-        const dayNum = d.getDate();
-        billsByDay[dayNum] = billsByDay[dayNum] || [];
-        billsByDay[dayNum].push(bill);
-      }
-    });
-  
-    // Group paychecks by day using the paycheck "date" property
-    const paychecks = dataService.getPaychecks();
-    const paychecksByDay = {};
-    paychecks.forEach(pc => {
-      if (!pc.date) return;
-      const d = new Date(pc.date + 'T00:00:00');
-      if (d.getFullYear() === year && d.getMonth() === month) {
-        const dayNum = d.getDate();
-        paychecksByDay[dayNum] = paychecksByDay[dayNum] || [];
-        paychecksByDay[dayNum].push(pc);
-      }
-    });
-  
-    html += `<div class="grid grid-cols-7 gap-1 mt-2">`;
-    let dayCounter = 1 - dayOfWeek;
-    for (let row = 0; row < 6; row++) {
-      for (let col = 0; col < 7; col++) {
-        if (dayCounter < 1 || dayCounter > daysInMonth) {
-          html += `<div class="h-20 p-1 bg-gray-800 text-gray-500 rounded"></div>`;
-        } else {
-          // Determine cell background based on bills status
-          let cellBgClass = "bg-gray-700"; // default if no bills
-          if (billsByDay[dayCounter] && billsByDay[dayCounter].length > 0) {
-            let allPaid = true;
-            billsByDay[dayCounter].forEach(bill => {
-              let monthlyDue = bill.getMonthlyDue();
-              let paidThisMonth = bill.getPaidThisMonth(year, month);
-              if (!(paidThisMonth >= monthlyDue && monthlyDue > 0)) {
-                allPaid = false;
-              }
-            });
-            cellBgClass = allPaid ? "bg-green-600" : "bg-red-600";
-          }
-          html += `<div class="h-20 p-1 ${cellBgClass} rounded border border-gray-600 flex flex-col overflow-auto">`;
-          html += `<div class="text-xs font-bold">${dayCounter}</div>`;
-          // List bills due on this day
-          if (billsByDay[dayCounter]) {
-            billsByDay[dayCounter].forEach(bill => {
-              html += `<div class="text-xs text-white">${bill.name}</div>`;
-            });
-          }
-          // List paychecks on this day
-          if (paychecksByDay[dayCounter]) {
-            paychecksByDay[dayCounter].forEach(pc => {
-              html += `<div class="text-xs text-green-300">Paycheck: $${pc.amount.toFixed(2)}</div>`;
-            });
-          }
-          html += `</div>`;
-        }
-        dayCounter++;
-      }
+  const container = document.getElementById('calendar-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+  const firstOfMonth = new Date(year, month, 1);
+  const dayOfWeek = firstOfMonth.getDay();
+  const lastOfMonth = new Date(year, month + 1, 0);
+  const daysInMonth = lastOfMonth.getDate();
+
+  let html = `
+    <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold">
+      <div>Sun</div><div>Mon</div><div>Tue</div>
+      <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+    </div>
+  `;
+
+  // Group bills by day
+  const bills = dataService.getBills();
+  const billsByDay = {};
+  bills.forEach(bill => {
+    if (!bill.dueDate) return;
+    const d = new Date(bill.dueDate + 'T00:00:00');
+    if (d.getFullYear() === year && d.getMonth() === month) {
+      const dayNum = d.getDate();
+      billsByDay[dayNum] = billsByDay[dayNum] || [];
+      billsByDay[dayNum].push(bill);
     }
-    html += `</div>`;
-    container.innerHTML = html;
+  });
+
+  // Group paychecks by day (including recurring paychecks)
+  const paychecks = dataService.getPaychecks();
+  const paychecksByDay = {};
+  for (let day = 1; day <= daysInMonth; day++) {
+    paychecks.forEach(pc => {
+      if (pc.occursOn(year, month, day)) {
+        if (!paychecksByDay[day]) paychecksByDay[day] = [];
+        paychecksByDay[day].push(pc);
+      }
+    });
   }
 
+  html += `<div class="grid grid-cols-7 gap-1 mt-2">`;
+  let dayCounter = 1 - dayOfWeek;
+  for (let row = 0; row < 6; row++) {
+    for (let col = 0; col < 7; col++) {
+      if (dayCounter < 1 || dayCounter > daysInMonth) {
+        // Use a light, neumorphic background for empty cells
+        html += `<div class="h-20 p-1 neumorphic"></div>`;
+      } else {
+        // Determine cell background based on bills status
+        let cellBgClass = "neumorphic"; // default if no bills
+        if (billsByDay[dayCounter] && billsByDay[dayCounter].length > 0) {
+          let allPaid = true;
+          billsByDay[dayCounter].forEach(bill => {
+            let monthlyDue = bill.getMonthlyDue();
+            let paidThisMonth = bill.getPaidThisMonth(year, month);
+            if (!(paidThisMonth >= monthlyDue && monthlyDue > 0)) {
+              allPaid = false;
+            }
+          });
+          // Use green or red overlays via inline style
+          cellBgClass = allPaid ? "bg-green-100" : "bg-red-100";
+          // Wrap the cell content in a container that still has the neumorphic border/rounding
+          cellBgClass += " neumorphic";
+        }
+        html += `<div class="h-20 p-1 ${cellBgClass} rounded border border-solid border-[#d1d9e6] flex flex-col overflow-auto">`;
+        html += `<div class="text-xs font-bold">${dayCounter}</div>`;
+        // List bills for this day
+        if (billsByDay[dayCounter]) {
+          billsByDay[dayCounter].forEach(bill => {
+            html += `<div class="text-xs text-gray-800">${bill.name}</div>`;
+          });
+        }
+        // List paychecks for this day
+        if (paychecksByDay[dayCounter]) {
+          paychecksByDay[dayCounter].forEach(pc => {
+            html += `<div class="text-xs text-teal-600">Paycheck: $${pc.amount.toFixed(2)}</div>`;
+          });
+        }
+        html += `</div>`;
+      }
+      dayCounter++;
+    }
+  }
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
 // --------------------
-// MANAGE BILLS (for editing/deleting bills)
+// MANAGE BILLS (Editing/Deleting Bills)
 // --------------------
 async function loadManageBills() {
   await dataService.loadData();
@@ -348,17 +387,17 @@ async function loadManageBills() {
 
   if (!bills.length) {
     const noItem = document.createElement('div');
-    noItem.className = 'p-3 bg-gray-700 rounded';
+    noItem.className = 'neumorphic p-4';
     noItem.textContent = 'No bills yet. Add one below.';
     manageList.appendChild(noItem);
     return;
   }
   bills.forEach((bill, index) => {
     const item = document.createElement('div');
-    item.className = 'p-3 bg-gray-700 border border-gray-600 rounded flex justify-between items-center';
+    item.className = 'neumorphic p-4 flex justify-between items-center';
     let info = `<div class="font-semibold">${bill.name}</div>
                 <div class="text-sm">
-                  Category: ${bill.category} <br/>
+                  Category: ${bill.category}<br>
                   Due: ${bill.getFormattedDueDate()}
                 </div>`;
     if (bill.category === "Loan") {
@@ -374,14 +413,12 @@ async function loadManageBills() {
     item.innerHTML = `<div>${info}</div>`;
     const btnGroup = document.createElement('div');
     btnGroup.className = 'space-x-2';
-
     const editBtn = document.createElement('button');
-    editBtn.className = 'px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded';
+    editBtn.className = 'neumorphic-button';
     editBtn.textContent = 'Edit';
     editBtn.onclick = () => editBill(index, bill);
-
     const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded';
+    deleteBtn.className = 'neumorphic-button';
     deleteBtn.textContent = 'Delete';
     deleteBtn.onclick = async () => {
       if (!confirm("Are you sure you want to delete this bill?")) return;
@@ -391,7 +428,6 @@ async function loadManageBills() {
       loadBills();
       renderCalendar();
     };
-
     btnGroup.appendChild(editBtn);
     btnGroup.appendChild(deleteBtn);
     item.appendChild(btnGroup);
@@ -408,7 +444,7 @@ function editBill(index, bill) {
 }
 
 // --------------------
-// EXTRA FIELDS (for bill categories)
+// EXTRA FIELDS (for Bill Categories)
 // --------------------
 function showExtraFields(category, bill = {}) {
   document.getElementById('loan-fields').classList.add('hidden');
@@ -433,7 +469,7 @@ function showExtraFields(category, bill = {}) {
 }
 
 // --------------------
-// SAVE BILL FORM (for bills)
+// SAVE BILL FORM
 // --------------------
 async function saveBillForm(e) {
   e.preventDefault();
@@ -483,18 +519,24 @@ function setupTabs() {
 
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
+      // Remove active state from all tab buttons
       btns.forEach(b => {
-        b.classList.remove('bg-blue-600', 'text-white');
-        b.classList.add('bg-gray-700', 'text-gray-200');
+        b.classList.remove('active-tab');
+        // Reset to the base neumorphic-button style
+        b.classList.add('neumorphic-button');
       });
+      // Hide all tab content sections
       sections.forEach(sec => sec.classList.add('hidden'));
 
-      btn.classList.remove('bg-gray-700', 'text-gray-200');
-      btn.classList.add('bg-blue-600', 'text-white');
+      // Remove base style and add active style for the clicked tab
+      btn.classList.remove('neumorphic-button');
+      btn.classList.add('active-tab');
 
+      // Show the corresponding tab section
       const tabId = btn.getAttribute('data-tab');
       document.getElementById(tabId).classList.remove('hidden');
 
+      // If the calendar tab is selected, re-render the calendar
       if (tabId === 'calendar-view') {
         renderCalendar();
       }

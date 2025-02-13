@@ -13,3 +13,9 @@ body {
   .list-group-item:hover {
     background-color: #e9ecef;
   }
+  /* New active tab style for a pressed, neumorphic look */
+.active-tab {
+  background: #f9f9f9;
+  box-shadow: inset 2px 2px 4px #cfd8e3, inset -2px -2px 4px #ffffff;
+  color: #4fd1c5;
+}

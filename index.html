@@ -1,411 +1,248 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Ryan Taylor Mode Bill Tracker</title>
+  <title>Neumorphic Bill Tracker</title>
 
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Animate.css (optional) -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-  />
+  <!-- Custom CSS for a Fresh, Fun, and Readable Neumorphic Theme -->
+  <style>
+    /* Base settings: light background and clean sans-serif font */
+    body {
+      background: #f9f9f9;
+      color: #333;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    /* Neumorphic container/card style */
+    .neumorphic {
+      background: #f9f9f9;
+      border-radius: 16px;
+      box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+    }
+    /* Neumorphic button style with a fresh teal color */
+    .neumorphic-button {
+      background: #4fd1c5;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #ffffff;
+      padding: 0.75rem 1.25rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+      color: #fff;
+    }
+    .neumorphic-button:hover {
+      box-shadow: 2px 2px 4px #d1d9e6, -2px -2px 4px #ffffff;
+    }
+    /* Neumorphic input and select fields */
+    .neumorphic-input,
+    .neumorphic-select {
+      background: #f9f9f9;
+      border: none;
+      border-radius: 12px;
+      box-shadow: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff;
+      padding: 0.75rem;
+      color: #333;
+    }
+    /* Footer styling */
+    footer {
+      background: #f9f9f9;
+      border-radius: 16px;
+      box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #ffffff;
+    }
+    .footer-text {
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.8), -1px -1px 2px rgba(0,0,0,0.2);
+    }
+    /* Container styling */
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
+    /* Calendar grid override */
+    #calendar-container div[class^="grid"] > div {
+      border: 1px solid #d1d9e6;
+      margin: 2px;
+    }
+  </style>
 
-  <!-- Custom CSS if you want any overrides (optional) -->
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- Force Tailwind dark mode -->
+  <!-- Disable dark mode in Tailwind -->
   <script>
     tailwind.config = {
-      darkMode: 'class',
+      darkMode: false,
     };
   </script>
 </head>
-<body class="dark:bg-gray-900 dark:text-gray-100 relative min-h-screen">
+<body class="min-h-screen flex flex-col">
+  <!-- Main Content -->
+  <div class="container flex-grow">
+    <header class="text-center mb-8">
+      <h1 class="text-4xl font-bold mb-4">Bill Tracker</h1>
+      <p class="text-xl">Neumorphic Edition</p>
+    </header>
 
-  <!-- AMERICAN FLAG (bottom center) -->
-  <img
-    src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
-    alt="US Flag"
-    class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-16 h-auto shadow-md"
-  />
-
-  <div class="max-w-5xl mx-auto mt-6 p-4 bg-gray-800 shadow-md rounded-lg min-h-[80vh]">
-    <h1 class="text-3xl font-bold text-center mb-6">Bill Tracker (Dark Mode)</h1>
-
-    <!-- Tab Buttons (with Heroicons) -->
-    <div class="flex space-x-4 mb-6 justify-center">
-      <!-- Bill View tab -->
-      <button
-        class="tab-btn inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-500 transition"
-        data-tab="bill-view"
-      >
-        <!-- Icon: Home -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-          stroke="currentColor" class="w-5 h-5 mr-2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M2.25 12l9-9 9 9M4.5 10.5v9.75A1.5 
-                   1.5 0 006 21.75h3.75" />
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M19.5 10.5V21a1.5 1.5 0 01-1.5 1.5h-3.75" />
-        </svg>
-        Bill View
-      </button>
-
-      <!-- Manage Bills tab -->
-      <button
-        class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
-        data-tab="manage-bills"
-      >
-        <!-- Icon: Pencil Square -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          class="w-5 h-5 mr-2"
-        >
-          <path
-            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.25 
-               2.25 0 113.182 3.182L7.5 15.75 4.5 
-               16.5l.75-3L16.732 3.732z"
-          />
-        </svg>
-        Manage Bills
-      </button>
-
-      <!-- Calendar View tab -->
-      <button
-        class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
-        data-tab="calendar-view"
-      >
-        <!-- Icon: Calendar -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5" stroke="currentColor"
-          class="w-5 h-5 mr-2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M19.5 6h-15m15 0H21a1.5 
-                   1.5 0 011.5 1.5v11.25A2.25 2.25 
-                   0 0120.25 21H3.75A2.25 2.25 
-                   0 011.5 18.75V7.5A1.5 1.5 0 
-                   013 6h1.5m3 0V3.75M16.5 6V3.75"
-          />
-        </svg>
-        Calendar
-      </button>
-
-      <!-- Settings tab -->
-      <button
-        class="tab-btn inline-flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md shadow hover:bg-gray-600 transition"
-        data-tab="settings"
-      >
-        <!-- Icon: Cog -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5" stroke="currentColor"
-          class="w-5 h-5 mr-2"
-        >
-          <path
-            stroke-linecap="round" stroke-linejoin="round"
-            d="M4.5 
-               12a7.5 7.5 0 0114.734-2.312c.079.24.118.498.118.762 
-               0 .264-.04.521-.118.762L19.5 
-               12a7.5 7.5 0 01-14.734 2.312c-.079-.24-.118-.498-.118-.762 
-               0-.264.04-.521.118-.762L4.5 12z"
-          />
-          <path
-            stroke-linecap="round" stroke-linejoin="round"
-            d="M12 15.75a3.75 3.75 0 
-               100-7.5 3.75 3.75 0 000 7.5z"
-          />
-        </svg>
-        Settings
-      </button>
+    <!-- Tab Buttons -->
+    <div class="flex justify-center space-x-4 mb-8">
+      <button class="neumorphic-button tab-btn" data-tab="bill-view">Bill View</button>
+      <button class="neumorphic-button tab-btn" data-tab="manage-bills">Manage Bills</button>
+      <button class="neumorphic-button tab-btn" data-tab="calendar-view">Calendar</button>
+      <button class="neumorphic-button tab-btn" data-tab="settings">Settings</button>
     </div>
 
     <!-- Tab Contents -->
-    <div id="tab-contents">
+    <div id="tab-contents" class="space-y-8">
       <!-- Bill View Section -->
       <section id="bill-view" class="tab-content block">
-        <div class="flex items-center justify-between mb-4">
-          <button
-            id="prev-month"
-            class="px-3 py-1 border border-gray-600 rounded bg-gray-700 text-gray-200 hover:bg-gray-600"
-          >
-            Previous
-          </button>
-          <h2 id="current-month" class="text-xl font-semibold"></h2>
-          <button
-            id="next-month"
-            class="px-3 py-1 border border-gray-600 rounded bg-gray-700 text-gray-200 hover:bg-gray-600"
-          >
-            Next
-          </button>
+        <div class="flex justify-between mb-6">
+          <button id="prev-month" class="neumorphic-button">Previous</button>
+          <h2 id="current-month" class="text-2xl font-semibold"></h2>
+          <button id="next-month" class="neumorphic-button">Next</button>
         </div>
 
         <!-- Bills Totals -->
-        <div
-          id="bill-summary"
-          class="mb-4 p-3 bg-gray-700 border-l-4 border-blue-400 rounded"
-        >
-          <p>
-            <strong>This Month’s Bills:</strong><br />
-            Paid: $0.00 | Remaining: $0.00
-          </p>
+        <div id="bill-summary" class="neumorphic p-6 mb-6">
+          <p class="text-lg font-semibold">This Month’s Bills:<br>Paid: $0.00 | Remaining: $0.00</p>
         </div>
 
-        <!-- Bill list -->
-        <div id="bill-list" class="space-y-2 mb-6"></div>
+        <!-- Bill List -->
+        <div id="bill-list" class="space-y-4 mb-6 neumorphic p-6"></div>
         
         <!-- Paychecks Totals -->
-        <div
-          id="paycheck-summary"
-          class="mb-4 p-3 bg-gray-700 border-l-4 border-green-400 rounded"
-        >
-          <p>
-            <strong>This Month’s Paychecks:</strong><br />
-            Total: $0.00
-          </p>
+        <div id="paycheck-summary" class="neumorphic p-6 mb-6">
+          <p class="text-lg font-semibold">This Month’s Paychecks:<br>Total: $0.00</p>
         </div>
 
-        <!-- Paycheck list -->
-        <div id="paycheck-list" class="space-y-2 mb-6"></div>
+        <!-- Paycheck List -->
+        <div id="paycheck-list" class="space-y-4 mb-6 neumorphic p-6"></div>
       </section>
 
-      <!-- Manage Bills -->
+      <!-- Manage Bills Section -->
       <section id="manage-bills" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-3">Manage Bills</h2>
-        <form id="bill-form" class="space-y-4 mb-6">
+        <h2 class="text-2xl font-bold mb-4">Manage Bills</h2>
+        <form id="bill-form" class="space-y-6 mb-8 neumorphic p-6">
           <input type="hidden" id="bill-id" value="" />
-
           <div>
-            <label for="bill-name" class="block font-medium">Name:</label>
-            <input
-              type="text"
-              id="bill-name"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              required
-            />
+            <label for="bill-name" class="block font-bold mb-2">Name:</label>
+            <input type="text" id="bill-name" class="w-full neumorphic-input" required />
           </div>
           <div>
-            <label for="bill-category" class="block font-medium">Category:</label>
-            <select
-              id="bill-category"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-            >
+            <label for="bill-category" class="block font-bold mb-2">Category:</label>
+            <select id="bill-category" class="w-full neumorphic-select">
               <option value="Loan">Loan</option>
               <option value="Utility">Utility</option>
               <option value="Credit Card">Credit Card</option>
             </select>
           </div>
           <div>
-            <label for="bill-due-date" class="block font-medium">Due Date:</label>
-            <input
-              type="date"
-              id="bill-due-date"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              required
-            />
+            <label for="bill-due-date" class="block font-bold mb-2">Due Date:</label>
+            <input type="date" id="bill-due-date" class="w-full neumorphic-input" required />
           </div>
-
-          <!-- Loan fields -->
+          <!-- Extra fields for specific bill types -->
           <div id="loan-fields" class="hidden space-y-2">
-            <div>
-              <label class="block font-medium">Balance (Optional):</label>
-              <input
-                type="number"
-                id="bill-balance"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
-            <div>
-              <label class="block font-medium">Minimum Payment:</label>
-              <input
-                type="number"
-                id="bill-min-payment"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
-            <div>
-              <label class="block font-medium">APR (Optional):</label>
-              <input
-                type="number"
-                id="bill-apr"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
+            <label class="block font-bold">Loan Details:</label>
+            <input type="number" id="bill-balance" placeholder="Balance" class="w-full neumorphic-input" step="0.01" />
+            <input type="number" id="bill-min-payment" placeholder="Minimum Payment" class="w-full neumorphic-input" step="0.01" />
+            <input type="number" id="bill-apr" placeholder="APR" class="w-full neumorphic-input" step="0.01" />
           </div>
-
-          <!-- Credit Card fields -->
           <div id="credit-card-fields" class="hidden space-y-2">
-            <div>
-              <label class="block font-medium">Balance (Optional):</label>
-              <input
-                type="number"
-                id="cc-balance"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
-            <div>
-              <label class="block font-medium">Credit Limit (Optional):</label>
-              <input
-                type="number"
-                id="cc-limit"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
-            <div>
-              <label class="block font-medium">Minimum Payment:</label>
-              <input
-                type="number"
-                id="cc-min-payment"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
-            <div>
-              <label class="block font-medium">APR (Optional):</label>
-              <input
-                type="number"
-                id="cc-apr"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
+            <label class="block font-bold">Credit Card Details:</label>
+            <input type="number" id="cc-balance" placeholder="Balance" class="w-full neumorphic-input" step="0.01" />
+            <input type="number" id="cc-limit" placeholder="Credit Limit" class="w-full neumorphic-input" step="0.01" />
+            <input type="number" id="cc-min-payment" placeholder="Minimum Payment" class="w-full neumorphic-input" step="0.01" />
+            <input type="number" id="cc-apr" placeholder="APR" class="w-full neumorphic-input" step="0.01" />
           </div>
-
-          <!-- Utility fields -->
           <div id="utility-fields" class="hidden space-y-2">
-            <div>
-              <label class="block font-medium">Monthly Amount:</label>
-              <input
-                type="number"
-                id="utility-amount"
-                class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-                step="0.01"
-              />
-            </div>
+            <label class="block font-bold">Utility Details:</label>
+            <input type="number" id="utility-amount" placeholder="Monthly Amount" class="w-full neumorphic-input" step="0.01" />
           </div>
-
-          <button
-            type="submit"
-            class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded shadow"
-          >
-            Save Bill
-          </button>
+          <button type="submit" class="neumorphic-button w-full">Save Bill</button>
         </form>
 
         <!-- List of existing bills -->
-        <div id="manage-bill-list" class="space-y-2"></div>
+        <div id="manage-bill-list" class="space-y-4 neumorphic p-6"></div>
 
-        <!-- New Paycheck Management Section -->
-        <h2 class="text-xl font-semibold mt-6">Manage Paychecks</h2>
-        <form id="paycheck-form" class="space-y-4 mb-6">
+        <!-- Manage Paychecks Section -->
+        <h2 class="text-2xl font-bold mt-8 mb-4">Manage Paychecks</h2>
+        <form id="paycheck-form" class="space-y-6 mb-8 neumorphic p-6">
           <div>
-            <label for="paycheck-date" class="block font-medium">Pay Date:</label>
-            <input
-              type="date"
-              id="paycheck-date"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              required
-            />
+            <label for="paycheck-date" class="block font-bold mb-2">Pay Date:</label>
+            <input type="date" id="paycheck-date" class="w-full neumorphic-input" required />
           </div>
           <div>
-            <label for="paycheck-amount" class="block font-medium">Amount:</label>
-            <input
-              type="number"
-              id="paycheck-amount"
-              class="border border-gray-600 p-2 rounded w-full bg-gray-700 text-gray-100"
-              step="0.01"
-              required
-            />
+            <label for="paycheck-amount" class="block font-bold mb-2">Amount:</label>
+            <input type="number" id="paycheck-amount" class="w-full neumorphic-input" step="0.01" required />
           </div>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded shadow"
-          >
-            Save Paycheck
-          </button>
+          <!-- Recurrence options -->
+          <div class="flex items-center space-x-2">
+            <input type="checkbox" id="paycheck-recurrence" class="form-checkbox h-5 w-5" />
+            <label for="paycheck-recurrence" class="font-bold">Recurring</label>
+          </div>
+          <div id="recurrence-options" class="hidden space-y-2">
+            <div>
+              <label for="paycheck-recurrence-type" class="block font-bold mb-2">Recurrence Type:</label>
+              <select id="paycheck-recurrence-type" class="w-full neumorphic-select">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Biweekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="custom">Custom (e.g. 7,22)</option>
+              </select>
+            </div>
+            <div id="custom-days-field" class="hidden">
+              <label for="paycheck-custom-days" class="block font-bold mb-2">Custom Days (comma separated):</label>
+              <input type="text" id="paycheck-custom-days" placeholder="e.g., 7,22" class="w-full neumorphic-input" />
+            </div>
+          </div>
+          <button type="submit" class="neumorphic-button w-full">Save Paycheck</button>
         </form>
-        <div id="manage-paycheck-list" class="space-y-2"></div>
+        <div id="manage-paycheck-list" class="space-y-4 neumorphic p-6"></div>
       </section>
 
-      <!-- Calendar View -->
+      <!-- Calendar View Section -->
       <section id="calendar-view" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-3">Calendar View</h2>
-        <div id="calendar-container" class="p-2 bg-gray-700 rounded"></div>
+        <h2 class="text-2xl font-bold mb-4 text-center">Calendar View</h2>
+        <div id="calendar-container" class="p-6 neumorphic"></div>
       </section>
 
       <!-- Settings Section -->
       <section id="settings" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-3">Settings</h2>
-        <div class="space-x-2">
-          <button
-            id="backup-btn"
-            class="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded shadow"
-          >
-            Backup Data
-          </button>
-          <button
-            id="restore-btn"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded shadow"
-          >
-            Restore Data
-          </button>
-          <button
-            id="reset-btn"
-            class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded shadow"
-          >
-            Master Reset
-          </button>
+        <h2 class="text-2xl font-bold mb-4 text-center">Settings</h2>
+        <div class="flex justify-center space-x-4">
+          <button id="backup-btn" class="neumorphic-button">Backup Data</button>
+          <button id="restore-btn" class="neumorphic-button">Restore Data</button>
+          <button id="reset-btn" class="neumorphic-button">Master Reset</button>
         </div>
       </section>
     </div>
   </div>
 
-  <!-- PAYMENT DRAWER (slide-in) -->
-  <div
-    id="pay-drawer"
-    class="fixed top-0 right-0 w-64 h-full bg-gray-800 shadow-xl border-l border-gray-600
-           transform translate-x-full transition-transform duration-300 flex flex-col p-4 z-50"
-  >
-    <h3 class="text-xl font-bold mb-4">Enter Payment</h3>
-    <input
-      type="number"
-      id="pay-amount"
-      class="border border-gray-600 p-2 rounded w-full mb-4 bg-gray-700 text-gray-100"
-      step="0.01"
-      placeholder="Amount"
-    />
+  <!-- Footer -->
+  <footer class="w-full p-6 mt-8 neumorphic text-center">
+    <p class="mb-2 text-sm footer-text">Created by Ryan Taylor and chatGPT</p>
+    <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="US Flag" class="mx-auto w-8 h-auto" />
+  </footer>
+
+  <!-- Payment Drawer -->
+  <div id="pay-drawer" class="fixed top-0 right-0 w-64 h-full neumorphic border-l border-gray-300 transform translate-x-full transition-transform duration-300 flex flex-col p-6 z-50">
+    <h3 class="text-xl font-bold mb-4 uppercase tracking-wider">Enter Payment</h3>
+    <input type="number" id="pay-amount" class="w-full neumorphic-input p-2 mb-4" step="0.01" placeholder="Amount" />
     <div class="mt-auto flex justify-end space-x-2">
-      <button
-        id="pay-cancel-btn"
-        class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded"
-      >
-        Cancel
-      </button>
-      <button
-        id="pay-confirm-btn"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded"
-      >
-        OK
-      </button>
+      <button id="pay-cancel-btn" class="neumorphic-button">Cancel</button>
+      <button id="pay-confirm-btn" class="neumorphic-button">OK</button>
     </div>
   </div>
 
   <script src="renderer.js"></script>
+  <script>
+    // Toggle recurrence options for paycheck form
+    document.getElementById('paycheck-recurrence').addEventListener('change', (e) => {
+      document.getElementById('recurrence-options').classList.toggle('hidden', !e.target.checked);
+    });
+    document.getElementById('paycheck-recurrence-type').addEventListener('change', (e) => {
+      document.getElementById('custom-days-field').classList.toggle('hidden', e.target.value !== 'custom');
+    });
+  </script>
 </body>
 </html>
