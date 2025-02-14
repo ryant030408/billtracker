@@ -7,6 +7,9 @@ const dataService = require('./dataService');
 // Global state
 let currentMonth = new Date();
 let currentPayBillIndex = null;
+// Global variables to hold Chart.js instances for Credit Analysis
+let interestChartInstance = null;
+let utilizationChartInstance = null;
 
 // Update the month display header
 function updateMonthDisplay() {
@@ -427,6 +430,11 @@ async function loadManageBills() {
       loadManageBills();
       loadBills();
       renderCalendar();
+    
+      // Update Credit Analysis if it is active.
+      if (!document.getElementById('credit-analysis').classList.contains('hidden')) {
+        loadCreditAnalysis();
+      }
     };
     btnGroup.appendChild(editBtn);
     btnGroup.appendChild(deleteBtn);
@@ -508,6 +516,11 @@ async function saveBillForm(e) {
   loadManageBills();
   loadBills();
   renderCalendar();
+
+  // If the Credit Analysis tab is active, update it.
+  if (!document.getElementById('credit-analysis').classList.contains('hidden')) {
+    loadCreditAnalysis();
+  }
 }
 
 // --------------------
@@ -519,26 +532,22 @@ function setupTabs() {
 
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Remove active state from all tab buttons
       btns.forEach(b => {
         b.classList.remove('active-tab');
-        // Reset to the base neumorphic-button style
         b.classList.add('neumorphic-button');
       });
-      // Hide all tab content sections
       sections.forEach(sec => sec.classList.add('hidden'));
 
-      // Remove base style and add active style for the clicked tab
       btn.classList.remove('neumorphic-button');
       btn.classList.add('active-tab');
 
-      // Show the corresponding tab section
       const tabId = btn.getAttribute('data-tab');
       document.getElementById(tabId).classList.remove('hidden');
 
-      // If the calendar tab is selected, re-render the calendar
       if (tabId === 'calendar-view') {
         renderCalendar();
+      } else if (tabId === 'credit-analysis') {
+        loadCreditAnalysis();
       }
     });
   });
@@ -577,7 +586,112 @@ function setupSettings() {
     }
   });
 }
+async function loadCreditAnalysis() {
+  await dataService.loadData();
+  const bills = dataService.getBills();
+  const creditCards = bills.filter(bill => bill.category === "Credit Card");
 
+  const summaryDiv = document.getElementById('credit-summary');
+  if (!creditCards.length) {
+    summaryDiv.innerHTML = "<p>No credit card data available.</p>";
+    return;
+  }
+
+  let totalBalance = 0, totalCreditLimit = 0, totalAPR = 0, totalMinPayment = 0;
+  creditCards.forEach(card => {
+    totalBalance += parseFloat(card.balance) || 0;
+    totalCreditLimit += parseFloat(card.creditLimit) || 0;
+    totalAPR += parseFloat(card.apr) || 0;
+    totalMinPayment += parseFloat(card.minPayment) || 0;
+  });
+  const avgAPR = creditCards.length ? (totalAPR / creditCards.length) : 0;
+  const overallUtilization = totalCreditLimit > 0 ? (totalBalance / totalCreditLimit * 100) : 0;
+
+  let summaryHTML = `<h2 class="text-2xl font-bold mb-4">Credit Card Analysis Summary</h2>`;
+  summaryHTML += `<p>Total Balance: $${totalBalance.toFixed(2)}</p>`;
+  summaryHTML += `<p>Total Credit Limit: $${totalCreditLimit.toFixed(2)}</p>`;
+  summaryHTML += `<p>Average APR: ${avgAPR.toFixed(2)}%</p>`;
+  summaryHTML += `<p>Total Minimum Payment: $${totalMinPayment.toFixed(2)}</p>`;
+  summaryHTML += `<p>Overall Credit Utilization: ${overallUtilization.toFixed(2)}%</p>`;
+  summaryHTML += `<h3 class="text-xl font-bold mt-4">Truths about Credit Cards:</h3>
+                  <ul class="list-disc ml-6">
+                    <li>High credit utilization can negatively impact your credit score.</li>
+                    <li>Paying only the minimum prolongs debt and increases interest costs.</li>
+                    <li>Lowering your balance quickly saves you money on interest.</li>
+                    <li>Understanding your APR is crucial for managing credit costs.</li>
+                  </ul>`;
+  summaryDiv.innerHTML = summaryHTML;
+
+  // Prepare data for the interest cost chart.
+  const interestData = creditCards.map(card => {
+    const balance = parseFloat(card.balance) || 0;
+    const apr = parseFloat(card.apr) || 0;
+    const monthlyInterest = (apr / 100 / 12) * balance;
+    return { name: card.name, monthlyInterest };
+  });
+
+  const interestLabels = interestData.map(item => item.name);
+  const interestValues = interestData.map(item => parseFloat(item.monthlyInterest.toFixed(2)));
+
+  // Destroy the previous interest chart if it exists.
+  if (interestChartInstance) {
+    interestChartInstance.destroy();
+  }
+  const interestCtx = document.getElementById('interestChart').getContext('2d');
+  interestChartInstance = new Chart(interestCtx, {
+    type: 'bar',
+    data: {
+      labels: interestLabels,
+      datasets: [{
+        label: 'Monthly Interest ($)',
+        data: interestValues,
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Prepare data for the utilization chart.
+  const utilizationData = creditCards.map(card => {
+    const balance = parseFloat(card.balance) || 0;
+    const creditLimit = parseFloat(card.creditLimit) || 0;
+    const utilization = creditLimit > 0 ? (balance / creditLimit * 100) : 0;
+    return { name: card.name, utilization };
+  });
+
+  const utilizationLabels = utilizationData.map(item => item.name);
+  const utilizationValues = utilizationData.map(item => parseFloat(item.utilization.toFixed(2)));
+
+  // Destroy the previous utilization chart if it exists.
+  if (utilizationChartInstance) {
+    utilizationChartInstance.destroy();
+  }
+  const utilizationCtx = document.getElementById('utilizationChart').getContext('2d');
+  utilizationChartInstance = new Chart(utilizationCtx, {
+    type: 'bar',
+    data: {
+      labels: utilizationLabels,
+      datasets: [{
+        label: 'Credit Utilization (%)',
+        data: utilizationValues,
+        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true, max: 100 }
+      }
+    }
+  });
+}
 // Export functions and state needed by renderer.js
 module.exports = {
   updateMonthDisplay,
@@ -595,5 +709,6 @@ module.exports = {
   savePaycheckForm,
   loadManagePaychecks,
   loadPaychecksView,
+  loadCreditAnalysis,
   currentMonth
 };

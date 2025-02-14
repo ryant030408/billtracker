@@ -7,6 +7,9 @@
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Add Chart.js for Credit Analysis graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- Custom CSS for a Fresh, Fun, and Readable Neumorphic Theme -->
   <style>
     /* Base settings: light background and clean sans-serif font */
@@ -89,6 +92,7 @@
       <button class="neumorphic-button tab-btn" data-tab="bill-view">Bill View</button>
       <button class="neumorphic-button tab-btn" data-tab="manage-bills">Manage Bills</button>
       <button class="neumorphic-button tab-btn" data-tab="calendar-view">Calendar</button>
+      <button class="neumorphic-button tab-btn" data-tab="credit-analysis">Credit Analysis</button>
       <button class="neumorphic-button tab-btn" data-tab="settings">Settings</button>
     </div>
 
@@ -205,7 +209,14 @@
         <h2 class="text-2xl font-bold mb-4 text-center">Calendar View</h2>
         <div id="calendar-container" class="p-6 neumorphic"></div>
       </section>
-
+      <!-- Credit Analysis Section -->
+      <section id="credit-analysis" class="tab-content hidden">
+        <div id="credit-summary" class="neumorphic p-6 mb-6"></div>
+        <div class="grid grid-cols-1 gap-6">
+          <canvas id="interestChart" class="neumorphic p-6" style="max-height: 300px;"></canvas>
+          <canvas id="utilizationChart" class="neumorphic p-6" style="max-height: 300px;"></canvas>
+        </div>
+      </section>
       <!-- Settings Section -->
       <section id="settings" class="tab-content hidden">
         <h2 class="text-2xl font-bold mb-4 text-center">Settings</h2>
