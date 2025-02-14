@@ -1,10 +1,16 @@
 {
     "name": "bill-tracker",
     "version": "1.0.0",
+    "description": "A Bill Tracker Electron App",
+    "author": "Ryan Taylor",
     "main": "main.js",
     "scripts": {
       "start": "electron .",
       "build": "electron-builder"
+    },
+    "devDependencies": {
+      "electron": "^25.2.0",
+      "electron-builder": "^23.6.0"
     },
     "build": {
       "appId": "com.codedispel.billtracker",
@@ -16,8 +22,5 @@
       "directories": {
         "buildResources": "build"
       }
-    },
-    "devDependencies": {
-      "electron-builder": "^23.6.0"
     }
   }
