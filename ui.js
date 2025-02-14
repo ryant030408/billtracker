@@ -566,8 +566,11 @@ function setupSettings() {
     ipcRenderer.invoke('restore-data').then(success => {
       if (success) {
         alert("Data restored successfully!");
+        // After restoring, update both bills and paychecks views.
         loadBills();
         loadManageBills();
+        loadPaychecksView();
+        loadManagePaychecks();
         renderCalendar();
       } else {
         alert("Restore cancelled or failed.");
@@ -581,6 +584,8 @@ function setupSettings() {
         dataService.setPaychecks([]);
         loadBills();
         loadManageBills();
+        loadPaychecksView();     // Refresh paychecks view
+        loadManagePaychecks();   // Refresh paychecks management list
         renderCalendar();
       });
     }
